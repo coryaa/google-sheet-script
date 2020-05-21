@@ -1,0 +1,23 @@
+function mergeSheets() {
+  /* Retrieve the desired folder */
+  var myFolder = DriveApp.getFoldersByName("merge test folder").next();  
+  /* Get all spreadsheets that resided on that folder */
+  var spreadSheets = myFolder.getFilesByType("text/csv");
+  if (spreadSheets.hasNext()) {
+    /* Create the new spreadsheet that you store other sheets */
+    var newSpreadSheet = SpreadsheetApp.create("merge test sheet");
+    var newSheet = newSpreadSheet.insertSheet("data");
+    Logger.log(SpreadsheetApp.getActiveSheet().getName());
+    /* Iterate over the spreadsheets over the folder */
+    while(spreadSheets.hasNext()) {
+      var sheet = spreadSheets.next();
+      /* Load the csv data */
+      var csvData = Utilities.parseCsv(sheet.getBlob().getDataAsString(), ",");
+      /* Copy the sheet to the new merged Spread Sheet */
+      var sheet = SpreadsheetApp.getActiveSheet();
+      for (var i=0;i<csvData.length;i++) {
+        sheet.appendRow(csvData[i]);
+      }
+    } 
+  }
+}
