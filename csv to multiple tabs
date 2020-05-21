@@ -1,0 +1,21 @@
+function mergeSheets() {
+  /* Retrieve the desired folder */
+  var myFolder = DriveApp.getFoldersByName("5-15-2020 import").next();  
+  /* Get all spreadsheets that resided on that folder */
+  var spreadSheets = myFolder.getFilesByType("text/csv");
+  if (spreadSheets.hasNext()) {
+    /* Create the new spreadsheet that you store other sheets */
+    var newSpreadSheet = SpreadsheetApp.create("brickset dataset 5-15-2020");
+    /* Iterate over the spreadsheets over the folder */
+    while(spreadSheets.hasNext()) {
+      var sheet = spreadSheets.next();
+      /* Load the csv data */
+      var csvData = Utilities.parseCsv(sheet.getBlob().getDataAsString(), ",");
+      /* Copy the sheet to the new merged Spread Sheet */
+      var newSheet = newSpreadSheet.insertSheet("import_"+sheet.getName());
+      for (var i=0;i<csvData.length;i++) {
+        newSheet.appendRow(csvData[i]);
+      }
+    } 
+  }   
+}
